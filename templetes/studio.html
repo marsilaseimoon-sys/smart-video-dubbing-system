@@ -3,439 +3,711 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio - DubStudio</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <title>DubStudio — AI Video Dubbing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #0D6EFD;
-            --grad-start: #667eea;
-            --grad-end: #764ba2;
+            --bg: #09090f;
+            --surface: #111118;
+            --surface2: #18181f;
+            --border: rgba(255,255,255,0.07);
+            --border-hover: rgba(255,255,255,0.15);
+            --accent: #6c63ff;
+            --accent2: #a78bfa;
+            --accent-glow: rgba(108,99,255,0.35);
+            --green: #22c55e;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --text: #f1f0ff;
+            --text2: #9898b0;
+            --text3: #5a5a72;
+            --radius: 16px;
+            --radius-sm: 10px;
         }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            padding: 2rem;
-            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
 
-        .container-main { max-width: 1000px; margin: 0 auto; }
+        /* ── BG MESH ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80vw 60vh at 20% 10%, rgba(108,99,255,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60vw 50vh at 80% 80%, rgba(167,139,250,0.07) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        /* Header */
+        .page-wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* ── HEADER ── */
         .header {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.75rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            margin-bottom: 2.5rem;
         }
-        .brand { display: flex; align-items: center; gap: 1rem; text-decoration: none; }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+        }
+
         .brand-icon {
-            width: 45px; height: 45px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
             border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.5rem;
+            font-size: 1.25rem;
+            color: white;
+            box-shadow: 0 0 20px var(--accent-glow);
         }
-        .brand-text { font-size: 1.5rem; font-weight: 700; color: #1e293b; }
-        .header-nav { display: flex; gap: 1rem; }
-        .nav-link {
-            color: #64748b; text-decoration: none; font-weight: 500;
-            padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.2s;
-        }
-        .nav-link:hover { background: #f8f9fa; color: #1e293b; }
 
-        .content-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        .brand-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.02em;
         }
-        .section-title {
-            font-size: 1.25rem; font-weight: 600; color: #212529;
+        .brand-name span { color: var(--accent2); }
+
+        .header-nav {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .nav-link {
+            color: var(--text2);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
             margin-bottom: 1.5rem;
-            display: flex; align-items: center; gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(108,99,255,0.5), transparent);
+        }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.01em;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .card-title i {
+            color: var(--accent2);
+            font-size: 1.1rem;
+        }
+        .card-title .badge-new {
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            letter-spacing: 0.05em;
         }
 
         /* ── SOURCE TABS ── */
         .source-tabs {
             display: flex;
-            gap: 0;
-            border: 2px solid #e9ecef;
-            border-radius: 14px;
-            overflow: hidden;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            gap: 4px;
             margin-bottom: 1.5rem;
         }
+
         .source-tab {
             flex: 1;
-            padding: 0.75rem 1.25rem;
+            padding: 0.65rem 1rem;
             border: none;
-            background: #fafbfc;
-            color: #6c757d;
+            background: transparent;
+            color: var(--text2);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
             font-weight: 600;
-            font-size: 0.95rem;
             cursor: pointer;
+            border-radius: 7px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
             transition: all 0.25s;
         }
-        .source-tab:first-child { border-right: 2px solid #e9ecef; }
         .source-tab.active {
-            background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
             color: white;
+            box-shadow: 0 2px 12px var(--accent-glow);
         }
-        .source-tab:hover:not(.active) { background: #f0f7ff; color: #212529; }
+        .source-tab:hover:not(.active) { color: var(--text); background: rgba(255,255,255,0.05); }
 
         /* ── UPLOAD AREA ── */
         .upload-area {
-            border: 2px dashed #dee2e6;
-            border-radius: 16px;
-            padding: 3rem;
+            border: 2px dashed var(--border-hover);
+            border-radius: var(--radius);
+            padding: 3rem 2rem;
             text-align: center;
-            background: #fafbfc;
+            background: var(--surface2);
             transition: all 0.3s;
             cursor: pointer;
         }
-        .upload-area:hover { border-color: var(--primary-blue); background: #f0f7ff; }
-        .upload-area.uploading { pointer-events: none; opacity: 0.6; }
-        .upload-area.drag-over { border-color: var(--primary-blue); background: #f0f7ff; transform: scale(1.01); }
-        .upload-icon {
-            width: 64px; height: 64px;
-            margin: 0 auto 1rem;
-            background: #e9ecef;
+        .upload-area:hover,
+        .upload-area.drag-over {
+            border-color: var(--accent);
+            background: rgba(108,99,255,0.06);
+            transform: scale(1.005);
+        }
+        .upload-area.uploading { pointer-events: none; opacity: 0.5; }
+
+        .upload-icon-wrap {
+            width: 72px; height: 72px;
+            margin: 0 auto 1.25rem;
+            background: rgba(108,99,255,0.12);
+            border: 1px solid rgba(108,99,255,0.25);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: #6c757d; font-size: 2rem;
+            color: var(--accent2);
+            font-size: 2rem;
         }
-        .upload-text { color: #495057; font-size: 1rem; margin-bottom: 0.5rem; font-weight: 500; }
-        .upload-hint { color: #adb5bd; font-size: 0.875rem; }
 
-        /* ── URL INPUT PANEL ── */
+        .upload-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.4rem;
+        }
+        .upload-sub { font-size: 0.8rem; color: var(--text3); }
+
+        .file-confirmed {
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(34,197,94,0.1);
+            border: 1px solid rgba(34,197,94,0.25);
+            border-radius: var(--radius-sm);
+            padding: 0.9rem 1.25rem;
+            margin-top: 1rem;
+            color: var(--green);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        .file-confirmed.show { display: flex; }
+
+        /* ── URL PANEL ── */
         .url-panel { display: none; }
         .url-panel.active { display: block; }
-        .upload-panel { display: block; }
         .upload-panel.hidden { display: none; }
 
-        .url-input-wrapper {
-            position: relative;
-            border: 2px solid #e9ecef;
-            border-radius: 16px;
+        .url-input-group {
+            display: flex;
+            align-items: center;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
             overflow: hidden;
-            transition: border-color 0.25s;
-            background: #fafbfc;
+            transition: border-color 0.25s, box-shadow 0.25s;
         }
-        .url-input-wrapper:focus-within { border-color: var(--primary-blue); background: #fff; }
-        .url-input-wrapper:focus-within .url-icon { color: var(--primary-blue); }
+        .url-input-group:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
 
         .url-icon {
-            position: absolute;
-            left: 1.25rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #adb5bd;
-            font-size: 1.4rem;
+            padding: 0 1rem;
+            font-size: 1.3rem;
+            color: var(--text3);
+            flex-shrink: 0;
             transition: color 0.25s;
-            pointer-events: none;
         }
+        .url-input-group:focus-within .url-icon { color: var(--accent2); }
 
         .url-input {
-            width: 100%;
+            flex: 1;
             border: none;
             background: transparent;
-            padding: 1.25rem 1.25rem 1.25rem 3.5rem;
-            font-size: 1rem;
-            color: #212529;
+            padding: 1rem 1rem 1rem 0;
+            font-size: 0.9rem;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
             outline: none;
         }
-        .url-input::placeholder { color: #adb5bd; }
+        .url-input::placeholder { color: var(--text3); }
 
-        .url-examples {
+        /* Platform chips */
+        .platform-chips {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
-            margin-top: 1rem;
+            margin-top: 0.85rem;
         }
-        .url-example-chip {
+
+        .chip {
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            padding: 0.35rem 0.75rem;
+            padding: 0.3rem 0.75rem;
             border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1.5px solid;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid;
+            cursor: default;
         }
-        .chip-yt {
-            background: #fff1f0;
-            border-color: #ffcdd2;
-            color: #c62828;
-        }
-        .chip-yt:hover { background: #ffcdd2; }
-        .chip-direct {
-            background: #f0f7ff;
-            border-color: #bbdefb;
-            color: #1565c0;
-        }
-        .chip-direct:hover { background: #bbdefb; }
+        .chip-yt { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); color: #fca5a5; }
+        .chip-direct { background: rgba(108,99,255,0.1); border-color: rgba(108,99,255,0.25); color: var(--accent2); }
 
-        /* URL detect badge */
-        .url-type-badge {
+        /* URL type badge */
+        .url-badge {
             display: none;
             align-items: center;
             gap: 0.4rem;
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            margin-top: 0.75rem;
+            margin-top: 0.65rem;
+            padding: 0.45rem 0.85rem;
+            border-radius: 20px;
+            width: fit-content;
         }
-        .url-type-badge.show { display: inline-flex; }
-        .badge-yt { background: #fff1f0; color: #c62828; }
-        .badge-direct { background: #f0f7ff; color: #1565c0; }
-        .badge-invalid { background: #fff8e1; color: #f57f17; }
+        .url-badge.show { display: inline-flex; }
+        .url-badge.yt   { background: rgba(239,68,68,0.12); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+        .url-badge.direct { background: rgba(108,99,255,0.12); color: var(--accent2); border: 1px solid rgba(108,99,255,0.2); }
+        .url-badge.invalid { background: rgba(245,158,11,0.12); color: #fcd34d; border: 1px solid rgba(245,158,11,0.2); }
 
-        .btn-load-url {
+        .btn-load {
             width: 100%;
             margin-top: 1rem;
-            background: linear-gradient(90deg, var(--grad-start), var(--grad-end));
+            padding: 0.85rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
             border: none;
-            border-radius: 12px;
+            border-radius: var(--radius-sm);
             color: white;
-            padding: 0.9rem;
-            font-size: 1rem;
-            font-weight: 600;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
             transition: all 0.2s;
+            box-shadow: 0 4px 16px var(--accent-glow);
+            letter-spacing: 0.02em;
         }
-        .btn-load-url:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
-        .btn-load-url:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-load:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 22px var(--accent-glow); }
+        .btn-load:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        /* ── File / URL Confirmed Info ── */
-        .file-info {
-            background: #d1fae5;
-            color: #065f46;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-top: 1rem;
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-        }
-        .file-info.show { display: flex; }
-
-        /* URL confirmed chip */
+        /* URL confirmed */
         .url-confirmed {
-            background: #e0e7ff;
-            color: #3730a3;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-top: 1rem;
             display: none;
             align-items: center;
             gap: 0.75rem;
+            background: rgba(108,99,255,0.1);
+            border: 1px solid rgba(108,99,255,0.25);
+            border-radius: var(--radius-sm);
+            padding: 0.9rem 1.25rem;
+            margin-top: 1rem;
         }
         .url-confirmed.show { display: flex; }
-        .url-confirmed-text { flex: 1; overflow: hidden; }
-        .url-confirmed-text small {
+        .url-confirmed-info { flex: 1; overflow: hidden; }
+        .url-confirmed-info small {
             display: block;
-            font-size: 0.78rem;
-            font-weight: 500;
-            color: #6366f1;
-            margin-bottom: 0.2rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent2);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.25rem;
         }
-        .url-confirmed-text span {
+        .url-confirmed-info span {
             display: block;
-            font-size: 0.88rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .btn-clear-url {
+        .btn-clear {
             background: none;
             border: none;
-            color: #6366f1;
+            color: var(--text3);
             cursor: pointer;
             font-size: 1.1rem;
-            padding: 0.25rem;
+            padding: 0.2rem;
             border-radius: 6px;
-            transition: background 0.2s;
+            transition: color 0.2s;
             flex-shrink: 0;
         }
-        .btn-clear-url:hover { background: rgba(99,102,241,0.1); }
+        .btn-clear:hover { color: var(--red); }
 
-        /* Language grid */
-        .language-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
+        /* ── OPEN BUTTON (for YouTube) ── */
+        .btn-open-yt {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 1rem;
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 8px;
+            color: #fca5a5;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-top: 0.65rem;
         }
-        .language-option {
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 1.25rem;
+        .btn-open-yt.show { display: inline-flex; }
+        .btn-open-yt:hover { background: rgba(239,68,68,0.2); color: #fca5a5; }
+
+        /* ── LANGUAGES ── */
+        .lang-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .lang-option {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem 0.75rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            background: #fff;
         }
-        .language-option:hover { border-color: #adb5bd; transform: translateY(-2px); }
-        .language-option.selected { border-color: var(--primary-blue); background: #f0f7ff; }
-        .language-flag { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .language-name { font-size: 0.875rem; color: #495057; font-weight: 500; }
+        .lang-option:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+        .lang-option.selected {
+            border-color: var(--accent);
+            background: rgba(108,99,255,0.1);
+            box-shadow: 0 0 0 1px var(--accent), 0 4px 14px var(--accent-glow);
+        }
 
-        /* Progress stages */
-        .progress-stages {
+        .lang-flag { font-size: 2rem; margin-bottom: 0.4rem; }
+        .lang-name { font-size: 0.75rem; font-weight: 600; color: var(--text2); }
+        .lang-option.selected .lang-name { color: var(--accent2); }
+
+        /* ── PIPELINE STAGES ── */
+        .pipeline {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
         }
-        .stage-item {
-            display: flex; align-items: center;
-            padding: 1rem;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            background: #fafbfc;
+
+        .stage {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.9rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             transition: all 0.3s;
         }
-        .stage-item.active  { background: #e7f3ff; border-color: var(--primary-blue); }
-        .stage-item.completed { background: #d1fae5; border-color: #10b981; }
-        .stage-item.error   { background: #fee2e2; border-color: #ef4444; }
 
-        /* NEW: download stage */
-        .stage-item[data-stage="download"] { display: none; }
-        .stage-item[data-stage="download"].show { display: flex; }
+        /* hidden download stage */
+        .stage[data-stage="download"] { display: none; }
+        .stage[data-stage="download"].show { display: flex; }
 
-        .stage-icon {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: #e9ecef;
-            display: flex; align-items: center; justify-content: center;
-            margin-right: 1rem;
-            font-size: 1.125rem; color: #6c757d;
-            transition: all 0.3s; flex-shrink: 0;
+        .stage.active {
+            background: rgba(108,99,255,0.1);
+            border-color: var(--accent);
         }
-        .stage-item.active .stage-icon { background: var(--primary-blue); color: white; animation: pulse 1.5s infinite; }
-        .stage-item.completed .stage-icon { background: #10b981; color: white; }
-        .stage-item.error .stage-icon { background: #ef4444; color: white; }
+        .stage.completed {
+            background: rgba(34,197,94,0.08);
+            border-color: rgba(34,197,94,0.3);
+        }
+        .stage.error {
+            background: rgba(239,68,68,0.08);
+            border-color: rgba(239,68,68,0.3);
+        }
 
-        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .stage-dot {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            color: var(--text3);
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+        .stage.active .stage-dot { background: var(--accent); color: white; animation: pulse 1.4s infinite; }
+        .stage.completed .stage-dot { background: var(--green); color: white; }
+        .stage.error .stage-dot { background: var(--red); color: white; }
 
-        .stage-info { flex: 1; }
-        .stage-name { font-size: 0.875rem; font-weight: 600; color: #212529; margin-bottom: 0.125rem; }
-        .stage-status { font-size: 0.75rem; color: #6c757d; }
-        .stage-item.active    .stage-status { color: var(--primary-blue); font-weight: 500; }
-        .stage-item.completed .stage-status { color: #10b981; }
-        .stage-item.error     .stage-status { color: #ef4444; }
+        @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.12);} }
 
-        .progress-bar-custom { height: 8px; background: #e9ecef; border-radius: 4px; margin-bottom: 0.5rem; overflow: hidden; }
-        .progress-bar-fill {
+        .stage-text { flex: 1; }
+        .stage-name { font-size: 0.8rem; font-weight: 700; color: var(--text); font-family: 'Syne', sans-serif; }
+        .stage-status-text { font-size: 0.7rem; color: var(--text3); margin-top: 0.1rem; }
+        .stage.active .stage-status-text { color: var(--accent2); }
+        .stage.completed .stage-status-text { color: var(--green); }
+        .stage.error .stage-status-text { color: var(--red); }
+
+        /* Progress bar */
+        .progress-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .progress-label { font-size: 0.8rem; color: var(--text3); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+        .progress-pct { font-size: 0.85rem; font-weight: 700; color: var(--accent2); font-family: 'Syne', sans-serif; }
+
+        .progress-track {
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            border-radius: 4px;
             width: 0%;
-            transition: width 0.3s;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-radius: 3px;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 8px var(--accent-glow);
         }
 
-        .btn-generate {
+        /* ── START BUTTON ── */
+        .btn-start {
             width: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            border: none; border-radius: 12px;
-            color: white; padding: 1rem;
-            font-size: 1.125rem; font-weight: 600;
-            cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
             margin-top: 1.5rem;
-        }
-        .btn-generate:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(102,126,234,0.4); }
-        .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .status-message { padding: 1rem; border-radius: 12px; margin-top: 1rem; display: none; }
-        .status-message.show { display: block; }
-        .status-message.success { background: #d1fae5; color: #065f46; }
-        .status-message.error   { background: #fee2e2; color: #991b1b; }
-        .status-message.info    { background: #e0e7ff; color: #3730a3; }
-
-        .spinner {
-            display: inline-block; width: 16px; height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%; border-top-color: white;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .download-section {
-            margin-top: 2rem; padding-top: 2rem;
-            border-top: 2px solid #e9ecef;
-        }
-        .success-banner {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white; padding: 1.5rem; border-radius: 12px;
-            display: flex; align-items: center;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
-        }
-        .success-icon {
-            width: 48px; height: 48px;
-            background: rgba(255,255,255,0.2); border-radius: 50%;
+            padding: 1.05rem;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; margin-right: 1rem; flex-shrink: 0;
+            gap: 0.6rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px var(--accent-glow);
         }
-        .success-content h4 { font-size: 1.125rem; font-weight: 600; margin: 0 0 0.25rem 0; }
-        .success-content p  { font-size: 0.875rem; margin: 0; opacity: 0.95; }
-        .video-preview-container { margin-bottom: 1.5rem; background: #000; border-radius: 12px; overflow: hidden; }
-        .download-buttons { display: flex; gap: 1rem; }
-        .btn-download {
-            flex: 1;
-            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-            border: none; border-radius: 12px; color: white;
-            padding: 1rem; font-size: 1rem; font-weight: 600;
-            cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-        }
-        .btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(16,185,129,0.4); }
-        .btn-new {
-            flex: 1; background: white;
-            border: 2px solid #e9ecef; border-radius: 12px;
-            color: #495057; padding: 1rem;
-            font-size: 1rem; font-weight: 600;
-            cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-        }
-        .btn-new:hover { background: #f8f9fa; border-color: var(--primary-blue); color: var(--primary-blue); }
+        .btn-start:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px var(--accent-glow); }
+        .btn-start:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        @media (max-width: 768px) {
-            body { padding: 1rem; }
-            .header { flex-direction: column; gap: 1rem; }
-            .language-grid { grid-template-columns: repeat(3, 1fr); }
-            .progress-stages { grid-template-columns: 1fr; }
-            .download-buttons { flex-direction: column; }
+        /* Status msg */
+        .status-msg {
+            display: none;
+            padding: 0.85rem 1.1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+        .status-msg.show { display: block; }
+        .status-msg.info { background: rgba(108,99,255,0.12); color: var(--accent2); border: 1px solid rgba(108,99,255,0.2); }
+        .status-msg.success { background: rgba(34,197,94,0.12); color: #86efac; border: 1px solid rgba(34,197,94,0.2); }
+        .status-msg.error { background: rgba(239,68,68,0.12); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+
+        /* Spinner */
+        .spin {
+            display: inline-block;
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.25);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: s 0.7s linear infinite;
+        }
+        @keyframes s { to { transform: rotate(360deg); } }
+
+        /* ── DOWNLOAD SECTION ── */
+        .download-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+
+        .success-banner {
+            background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.08));
+            border: 1px solid rgba(34,197,94,0.3);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .success-icon-wrap {
+            width: 44px; height: 44px;
+            background: rgba(34,197,94,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            color: var(--green);
+            flex-shrink: 0;
+        }
+        .success-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text); }
+        .success-sub { font-size: 0.8rem; color: var(--text2); margin-top: 0.15rem; }
+
+        .video-preview {
+            background: #000;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+        .video-preview video { width: 100%; display: block; }
+
+        .dl-buttons { display: flex; gap: 0.75rem; }
+
+        .btn-dl {
+            flex: 1;
+            padding: 0.9rem;
+            background: linear-gradient(90deg, var(--green), #16a34a);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(34,197,94,0.25);
+        }
+        .btn-dl:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34,197,94,0.35); }
+
+        .btn-new {
+            flex: 1;
+            padding: 0.9rem;
+            background: transparent;
+            border: 1.5px solid var(--border-hover);
+            border-radius: var(--radius-sm);
+            color: var(--text2);
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        .btn-new:hover { border-color: var(--accent); color: var(--accent2); }
+
+        /* ── STEP INDICATOR ── */
+        .steps-row {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 2.5rem;
+            justify-content: center;
+        }
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .step-num {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text3);
+            font-family: 'Syne', sans-serif;
+        }
+        .step-item.active .step-num {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .step-item.done .step-num {
+            background: var(--green);
+            border-color: var(--green);
+            color: white;
+        }
+        .step-label { font-size: 0.68rem; color: var(--text3); font-weight: 600; letter-spacing: 0.04em; }
+        .step-item.active .step-label { color: var(--accent2); }
+        .step-item.done .step-label { color: var(--green); }
+        .step-line {
+            flex: 1;
+            height: 1.5px;
+            background: var(--border);
+            max-width: 60px;
+            min-width: 20px;
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 640px) {
+            .page-wrap { padding: 1rem 1rem 3rem; }
+            .header { flex-direction: column; gap: 1rem; padding: 1rem; }
+            .pipeline { grid-template-columns: 1fr 1fr; }
+            .lang-grid { grid-template-columns: repeat(4, 1fr); }
+            .dl-buttons { flex-direction: column; }
+            .steps-row { display: none; }
         }
     </style>
 </head>
 <body>
-<div class="container-main">
+<div class="page-wrap">
 
     <!-- Header -->
     <div class="header">
         <a href="/" class="brand">
             <div class="brand-icon"><i class="bi bi-play-circle-fill"></i></div>
-            <span class="brand-text">DubStudio</span>
+            <span class="brand-name">Dub<span>Studio</span></span>
         </a>
         <div class="header-nav">
             <a href="/dashboard" class="nav-link">Dashboard</a>
@@ -443,14 +715,36 @@
         </div>
     </div>
 
-    <!-- ── VIDEO SOURCE CARD ── -->
-    <div class="content-card">
-        <h3 class="section-title">
-            <i class="bi bi-collection-play"></i>
-            Video Source
-        </h3>
+    <!-- Steps -->
+    <div class="steps-row">
+        <div class="step-item active" id="s1">
+            <div class="step-num">1</div>
+            <div class="step-label">SOURCE</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" id="s2">
+            <div class="step-num">2</div>
+            <div class="step-label">LANGUAGE</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" id="s3">
+            <div class="step-num">3</div>
+            <div class="step-label">PROCESS</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" id="s4">
+            <div class="step-num">4</div>
+            <div class="step-label">DOWNLOAD</div>
+        </div>
+    </div>
 
-        <!-- Tab switcher -->
+    <!-- Video Source -->
+    <div class="card">
+        <div class="card-title">
+            <i class="bi bi-collection-play-fill"></i>
+            Video Source
+        </div>
+
         <div class="source-tabs">
             <button class="source-tab active" id="tabUpload" onclick="switchTab('upload')">
                 <i class="bi bi-upload"></i> Upload File
@@ -463,195 +757,171 @@
         <!-- UPLOAD PANEL -->
         <div class="upload-panel" id="uploadPanel">
             <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-                <div class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
-                <p class="upload-text">Drop your video file here or click to browse</p>
-                <p class="upload-hint">Supports MP4, MOV, AVI up to 2 GB</p>
+                <div class="upload-icon-wrap"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+                <div class="upload-title">Drop video here or click to browse</div>
+                <div class="upload-sub">MP4 · MOV · AVI &nbsp;·&nbsp; Max 2 GB</div>
             </div>
             <input type="file" id="fileInput" style="display:none;" accept="video/*">
-            <div class="file-info" id="fileInfo">
-                <i class="bi bi-check-circle-fill"></i>
-                <strong id="fileName"></strong>&nbsp;uploaded successfully
+            <div class="file-confirmed" id="fileConfirmed">
+                <i class="bi bi-check-circle-fill" style="font-size:1.2rem;"></i>
+                <span id="fileName"></span>
             </div>
-            <div class="status-message" id="uploadStatus"></div>
+            <div class="status-msg" id="uploadStatus"></div>
         </div>
 
         <!-- URL PANEL -->
         <div class="url-panel" id="urlPanel">
-            <div class="url-input-wrapper">
+            <div class="url-input-group">
                 <i class="bi bi-link-45deg url-icon"></i>
                 <input
                     type="text"
                     class="url-input"
                     id="videoUrlInput"
-                    placeholder="https://www.youtube.com/watch?v=... or any direct video URL"
+                    placeholder="Paste YouTube or direct video URL…"
                     oninput="onUrlInput(this.value)"
                     onkeydown="if(event.key==='Enter') loadUrl()"
                 >
             </div>
 
-            <!-- Live type detection badge -->
-            <div class="url-type-badge" id="urlTypeBadge"></div>
+            <div class="url-badge" id="urlBadge"></div>
 
-            <!-- Hint chips -->
-            <div class="url-examples">
-                <span class="url-example-chip chip-yt">
-                    <i class="bi bi-youtube"></i> YouTube / Shorts
-                </span>
-                <span class="url-example-chip chip-direct">
-                    <i class="bi bi-file-earmark-play"></i> Direct MP4 / Video URL
-                </span>
+            <!-- Open in YouTube button -->
+            <a class="btn-open-yt" id="btnOpenYt" href="#" target="_blank" rel="noopener">
+                <i class="bi bi-youtube"></i> Open in YouTube
+            </a>
+
+            <div class="platform-chips">
+                <span class="chip chip-yt"><i class="bi bi-youtube"></i> YouTube &amp; Shorts</span>
+                <span class="chip chip-direct"><i class="bi bi-file-earmark-play"></i> Direct MP4 / Video URL</span>
             </div>
 
-            <button class="btn-load-url" id="btnLoadUrl" onclick="loadUrl()" disabled>
+            <button class="btn-load" id="btnLoadUrl" onclick="loadUrl()" disabled>
                 <i class="bi bi-cloud-download"></i> Load Video from URL
             </button>
 
-            <!-- Confirmed URL display -->
             <div class="url-confirmed" id="urlConfirmed">
-                <i class="bi bi-check-circle-fill" style="font-size:1.4rem; color:#6366f1; flex-shrink:0;"></i>
-                <div class="url-confirmed-text">
-                    <small id="urlTypeLabel">URL loaded</small>
+                <i class="bi bi-check-circle-fill" style="font-size:1.35rem; color:var(--accent2); flex-shrink:0;"></i>
+                <div class="url-confirmed-info">
+                    <small id="urlTypeLabel">URL Loaded</small>
                     <span id="urlConfirmedText"></span>
                 </div>
-                <button class="btn-clear-url" onclick="clearUrl()" title="Clear URL">
-                    <i class="bi bi-x-circle"></i>
+                <button class="btn-clear" onclick="clearUrl()" title="Clear">
+                    <i class="bi bi-x-circle-fill"></i>
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Target Language -->
-    <div class="content-card">
-        <h3 class="section-title">
-            <i class="bi bi-translate"></i> Target Language
-        </h3>
-        <div class="language-grid" id="languageGrid">
-            <div class="language-option selected" data-lang="en">
-                <div class="language-flag">🇬🇧</div>
-                <div class="language-name">English</div>
-            </div>
-            <div class="language-option" data-lang="ur">
-                <div class="language-flag">🇵🇰</div>
-                <div class="language-name">Urdu</div>
-            </div>
-            <div class="language-option" data-lang="es">
-                <div class="language-flag">🇪🇸</div>
-                <div class="language-name">Spanish</div>
-            </div>
-            <div class="language-option" data-lang="fr">
-                <div class="language-flag">🇫🇷</div>
-                <div class="language-name">French</div>
-            </div>
-            <div class="language-option" data-lang="de">
-                <div class="language-flag">🇩🇪</div>
-                <div class="language-name">German</div>
-            </div>
-            <div class="language-option" data-lang="it">
-                <div class="language-flag">🇮🇹</div>
-                <div class="language-name">Italian</div>
-            </div>
-            <div class="language-option" data-lang="pt">
-                <div class="language-flag">🇵🇹</div>
-                <div class="language-name">Portuguese</div>
-            </div>
-            <div class="language-option" data-lang="ja">
-                <div class="language-flag">🇯🇵</div>
-                <div class="language-name">Japanese</div>
-            </div>
+    <div class="card">
+        <div class="card-title">
+            <i class="bi bi-translate"></i>
+            Target Language
+        </div>
+        <div class="lang-grid" id="langGrid">
+            <div class="lang-option selected" data-lang="en"><div class="lang-flag">🇬🇧</div><div class="lang-name">English</div></div>
+            <div class="lang-option" data-lang="ur"><div class="lang-flag">🇵🇰</div><div class="lang-name">Urdu</div></div>
+            <div class="lang-option" data-lang="es"><div class="lang-flag">🇪🇸</div><div class="lang-name">Spanish</div></div>
+            <div class="lang-option" data-lang="fr"><div class="lang-flag">🇫🇷</div><div class="lang-name">French</div></div>
+            <div class="lang-option" data-lang="de"><div class="lang-flag">🇩🇪</div><div class="lang-name">German</div></div>
+            <div class="lang-option" data-lang="it"><div class="lang-flag">🇮🇹</div><div class="lang-name">Italian</div></div>
+            <div class="lang-option" data-lang="pt"><div class="lang-flag">🇵🇹</div><div class="lang-name">Portuguese</div></div>
+            <div class="lang-option" data-lang="ja"><div class="lang-flag">🇯🇵</div><div class="lang-name">Japanese</div></div>
+            <div class="lang-option" data-lang="ar"><div class="lang-flag">🇸🇦</div><div class="lang-name">Arabic</div></div>
+            <div class="lang-option" data-lang="zh"><div class="lang-flag">🇨🇳</div><div class="lang-name">Chinese</div></div>
+            <div class="lang-option" data-lang="hi"><div class="lang-flag">🇮🇳</div><div class="lang-name">Hindi</div></div>
+            <div class="lang-option" data-lang="ko"><div class="lang-flag">🇰🇷</div><div class="lang-name">Korean</div></div>
         </div>
     </div>
 
     <!-- Processing -->
-    <div class="content-card">
-        <h3 class="section-title">
-            <i class="bi bi-sliders"></i> Processing
-        </h3>
+    <div class="card">
+        <div class="card-title">
+            <i class="bi bi-cpu-fill"></i>
+            Processing Pipeline
+        </div>
 
-        <div class="progress-stages" id="progressStages">
-            <!-- NEW: download stage (only shown for URL mode) -->
-            <div class="stage-item" data-stage="download">
-                <div class="stage-icon"><i class="bi bi-cloud-download"></i></div>
-                <div class="stage-info">
+        <div class="pipeline" id="pipeline">
+            <div class="stage" data-stage="download">
+                <div class="stage-dot"><i class="bi bi-cloud-download"></i></div>
+                <div class="stage-text">
                     <div class="stage-name">Download</div>
-                    <div class="stage-status">Pending</div>
+                    <div class="stage-status-text">Pending</div>
                 </div>
             </div>
-            <div class="stage-item" data-stage="upload">
-                <div class="stage-icon"><i class="bi bi-cloud-upload"></i></div>
-                <div class="stage-info">
+            <div class="stage" data-stage="upload">
+                <div class="stage-dot"><i class="bi bi-cloud-upload"></i></div>
+                <div class="stage-text">
                     <div class="stage-name">Upload</div>
-                    <div class="stage-status">Pending</div>
+                    <div class="stage-status-text">Pending</div>
                 </div>
             </div>
-            <div class="stage-item" data-stage="extract">
-                <div class="stage-icon"><i class="bi bi-volume-up"></i></div>
-                <div class="stage-info">
+            <div class="stage" data-stage="extract">
+                <div class="stage-dot"><i class="bi bi-volume-up"></i></div>
+                <div class="stage-text">
                     <div class="stage-name">Extract Audio</div>
-                    <div class="stage-status">Pending</div>
+                    <div class="stage-status-text">Pending</div>
                 </div>
             </div>
-            <div class="stage-item" data-stage="transcribe">
-                <div class="stage-icon"><i class="bi bi-mic"></i></div>
-                <div class="stage-info">
+            <div class="stage" data-stage="transcribe">
+                <div class="stage-dot"><i class="bi bi-mic-fill"></i></div>
+                <div class="stage-text">
                     <div class="stage-name">Transcribe</div>
-                    <div class="stage-status">Pending</div>
+                    <div class="stage-status-text">Pending</div>
                 </div>
             </div>
-            <div class="stage-item" data-stage="translate">
-                <div class="stage-icon"><i class="bi bi-translate"></i></div>
-                <div class="stage-info">
+            <div class="stage" data-stage="translate">
+                <div class="stage-dot"><i class="bi bi-translate"></i></div>
+                <div class="stage-text">
                     <div class="stage-name">Translate</div>
-                    <div class="stage-status">Pending</div>
+                    <div class="stage-status-text">Pending</div>
                 </div>
             </div>
-            <div class="stage-item" data-stage="synthesize">
-                <div class="stage-icon"><i class="bi bi-soundwave"></i></div>
-                <div class="stage-info">
-                    <div class="stage-name">Synthesize</div>
-                    <div class="stage-status">Pending</div>
+            <div class="stage" data-stage="synthesize">
+                <div class="stage-dot"><i class="bi bi-soundwave"></i></div>
+                <div class="stage-text">
+                    <div class="stage-name">Synthesize Voice</div>
+                    <div class="stage-status-text">Pending</div>
                 </div>
             </div>
-            <div class="stage-item" data-stage="merge">
-                <div class="stage-icon"><i class="bi bi-film"></i></div>
-                <div class="stage-info">
-                    <div class="stage-name">Merge</div>
-                    <div class="stage-status">Pending</div>
+            <div class="stage" data-stage="merge">
+                <div class="stage-dot"><i class="bi bi-film"></i></div>
+                <div class="stage-text">
+                    <div class="stage-name">Merge Video</div>
+                    <div class="stage-status-text">Pending</div>
                 </div>
             </div>
         </div>
 
-        <!-- Progress bar -->
-        <div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
-                <span style="font-size:0.875rem; color:#6c757d;">Overall Progress</span>
-                <span id="overallPercent" style="font-size:0.875rem; font-weight:600; color:#667eea;">0%</span>
-            </div>
-            <div class="progress-bar-custom">
-                <div class="progress-bar-fill" id="progressBar"></div>
-            </div>
+        <div class="progress-row">
+            <span class="progress-label">Overall Progress</span>
+            <span class="progress-pct" id="progressPct">0%</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
         </div>
 
-        <button class="btn-generate" id="generateBtn" onclick="startDubbing()" disabled>
+        <button class="btn-start" id="startBtn" onclick="startDubbing()" disabled>
             <i class="bi bi-play-circle-fill"></i> Start Dubbing
         </button>
-        <div class="status-message" id="processingStatus"></div>
+        <div class="status-msg" id="processingStatus"></div>
 
         <!-- Download Section -->
-        <div class="download-section" id="downloadSection" style="display:none;">
+        <div class="download-section" id="downloadSection">
             <div class="success-banner">
-                <div class="success-icon"><i class="bi bi-check-circle-fill"></i></div>
-                <div class="success-content">
-                    <h4>Video Dubbing Completed!</h4>
-                    <p>Your dubbed video is ready to download</p>
+                <div class="success-icon-wrap"><i class="bi bi-check-circle-fill"></i></div>
+                <div>
+                    <div class="success-title">Dubbing Completed!</div>
+                    <div class="success-sub">Your dubbed video is ready to preview & download</div>
                 </div>
             </div>
-            <div class="video-preview-container">
-                <video id="previewVideo" controls style="width:100%;">
+            <div class="video-preview">
+                <video id="previewVideo" controls>
                     <source id="videoSource" src="" type="video/mp4">
                 </video>
             </div>
-            <div class="download-buttons">
-                <button class="btn-download" onclick="downloadVideo()">
+            <div class="dl-buttons">
+                <button class="btn-dl" onclick="downloadVideo()">
                     <i class="bi bi-download"></i> Download Video
                 </button>
                 <button class="btn-new" onclick="createNewDub()">
@@ -661,20 +931,18 @@
         </div>
     </div>
 
-</div><!-- /container-main -->
+</div>
 
 <script>
-    const API_BASE_URL = 'http://localhost:5000/api';
-    let uploadedFilePath  = null;   // set by file upload OR url load
-    let currentJobId      = null;
-    let statusCheckInterval = null;
-    let downloadUrl       = null;
-    let currentMode       = 'upload';   // 'upload' | 'url'
-    let loadedUrl         = null;       // confirmed URL
+    const API_BASE = 'http://localhost:5000/api';
+    let uploadedFilePath = null;
+    let currentJobId     = null;
+    let pollTimer        = null;
+    let downloadUrl      = null;
+    let currentMode      = 'upload';
+    let loadedUrl        = null;
 
-    /* ════════════════════════════════════════
-       TAB SWITCHING
-    ════════════════════════════════════════ */
+    /* ── TABS ── */
     function switchTab(tab) {
         currentMode = tab;
         document.getElementById('tabUpload').classList.toggle('active', tab === 'upload');
@@ -682,137 +950,84 @@
         document.getElementById('uploadPanel').classList.toggle('hidden', tab !== 'upload');
         document.getElementById('urlPanel').classList.toggle('active', tab === 'url');
 
-        // show/hide download stage pill
-        const dlStage = document.querySelector('.stage-item[data-stage="download"]');
+        const dlStage = document.querySelector('.stage[data-stage="download"]');
         dlStage.classList.toggle('show', tab === 'url');
-
         resetReadiness();
     }
 
-    /* ════════════════════════════════════════
-       LANGUAGE SELECTION
-    ════════════════════════════════════════ */
-    document.querySelectorAll('.language-option').forEach(opt => {
-        opt.addEventListener('click', function() {
-            document.querySelectorAll('.language-option').forEach(o => o.classList.remove('selected'));
+    /* ── LANGUAGE ── */
+    document.querySelectorAll('.lang-option').forEach(opt => {
+        opt.addEventListener('click', function () {
+            document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('selected'));
             this.classList.add('selected');
         });
     });
 
-    /* ════════════════════════════════════════
-       STATUS HELPER
-    ════════════════════════════════════════ */
-    function showStatus(id, msg, type = 'info') {
+    /* ── HELPERS ── */
+    function showMsg(id, text, type = 'info') {
         const el = document.getElementById(id);
-        el.textContent = msg;
-        el.className = `status-message show ${type}`;
-        if (type === 'success' || type === 'error') {
-            setTimeout(() => el.classList.remove('show'), 5000);
-        }
+        el.textContent = text;
+        el.className = `status-msg show ${type}`;
+        if (type === 'success' || type === 'error') setTimeout(() => el.classList.remove('show'), 5000);
     }
 
     function resetReadiness() {
         uploadedFilePath = null;
-        loadedUrl        = null;
-        document.getElementById('generateBtn').disabled = true;
+        loadedUrl = null;
+        document.getElementById('startBtn').disabled = true;
     }
 
-    /* ════════════════════════════════════════
-       FILE UPLOAD
-    ════════════════════════════════════════ */
-    document.getElementById('fileInput').addEventListener('change', async function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInfo   = document.getElementById('fileInfo');
-
-        uploadArea.classList.add('uploading');
-        showStatus('uploadStatus', 'Uploading video…', 'info');
-
-        const formData = new FormData();
-        formData.append('video', file);
-
-        try {
-            const res  = await fetch(`${API_BASE_URL}/upload`, { method: 'POST', body: formData });
-            const data = await res.json();
-
-            if (data.success) {
-                uploadedFilePath = data.filepath;
-                document.getElementById('fileName').textContent = data.filename;
-                fileInfo.classList.add('show');
-                document.getElementById('generateBtn').disabled = false;
-                showStatus('uploadStatus', 'Video uploaded successfully!', 'success');
-            } else {
-                showStatus('uploadStatus', `Upload failed: ${data.error}`, 'error');
-            }
-        } catch (err) {
-            showStatus('uploadStatus', `Upload failed: ${err.message}`, 'error');
-        } finally {
-            uploadArea.classList.remove('uploading');
-        }
-    });
-
-    /* Drag & drop */
-    const uploadArea = document.getElementById('uploadArea');
-    uploadArea.addEventListener('dragover',  e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
-    uploadArea.addEventListener('dragleave', ()  => uploadArea.classList.remove('drag-over'));
-    uploadArea.addEventListener('drop', e => {
-        e.preventDefault();
-        uploadArea.classList.remove('drag-over');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            document.getElementById('fileInput').files = files;
-            document.getElementById('fileInput').dispatchEvent(new Event('change'));
-        }
-    });
-
-    /* ════════════════════════════════════════
-       URL INPUT — live detection
-    ════════════════════════════════════════ */
-    function isYouTubeUrl(url) {
+    /* ── URL HELPERS ── */
+    function isYouTube(url) {
         return /^https?:\/\/(www\.)?(youtube\.com|youtu\.be|m\.youtube\.com)/i.test(url);
     }
-    function isHttpUrl(url) {
+    function isHttp(url) {
         return /^https?:\/\/.+/i.test(url);
     }
 
+    /* ── URL INPUT LIVE DETECTION ── */
     function onUrlInput(val) {
-        const badge  = document.getElementById('urlTypeBadge');
-        const btnLoad = document.getElementById('btnLoadUrl');
         val = val.trim();
+        const badge     = document.getElementById('urlBadge');
+        const btnLoad   = document.getElementById('btnLoadUrl');
+        const btnOpenYt = document.getElementById('btnOpenYt');
 
-        badge.classList.remove('show', 'badge-yt', 'badge-direct', 'badge-invalid');
+        badge.classList.remove('show', 'yt', 'direct', 'invalid');
+        btnOpenYt.classList.remove('show');
+        btnLoad.disabled = true;
 
-        if (!val) { btnLoad.disabled = true; return; }
+        if (!val) return;
 
-        if (isYouTubeUrl(val)) {
+        if (isYouTube(val)) {
             badge.innerHTML = '<i class="bi bi-youtube"></i> YouTube video detected';
-            badge.classList.add('show', 'badge-yt');
+            badge.classList.add('show', 'yt');
             btnLoad.disabled = false;
-        } else if (isHttpUrl(val)) {
+
+            // ✅ FIX: show "Open in YouTube" button with correct href
+            btnOpenYt.href = val;
+            btnOpenYt.classList.add('show');
+
+        } else if (isHttp(val)) {
             badge.innerHTML = '<i class="bi bi-file-earmark-play"></i> Direct video URL detected';
-            badge.classList.add('show', 'badge-direct');
+            badge.classList.add('show', 'direct');
             btnLoad.disabled = false;
         } else {
             badge.innerHTML = '<i class="bi bi-exclamation-circle"></i> Enter a valid http(s) URL';
-            badge.classList.add('show', 'badge-invalid');
-            btnLoad.disabled = true;
+            badge.classList.add('show', 'invalid');
         }
     }
 
-    /* ── Load URL → send to backend ── */
+    /* ── LOAD URL ── */
     async function loadUrl() {
         const url = document.getElementById('videoUrlInput').value.trim();
-        if (!url || !isHttpUrl(url)) return;
+        if (!url || !isHttp(url)) return;
 
         const btnLoad = document.getElementById('btnLoadUrl');
         btnLoad.disabled = true;
-        btnLoad.innerHTML = '<span class="spinner"></span> Loading…';
+        btnLoad.innerHTML = '<span class="spin"></span> Loading…';
 
         try {
-            // Tell the backend we want to process a URL
-            const res  = await fetch(`${API_BASE_URL}/load_url`, {
+            const res  = await fetch(`${API_BASE}/load_url`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url })
@@ -820,82 +1035,110 @@
             const data = await res.json();
 
             if (data.success) {
-                loadedUrl        = url;
-                uploadedFilePath = data.filepath || url;   // backend may return a temp path or just echo url
-
-                // Show confirmed banner
-                const typeLabel = isYouTubeUrl(url) ? '🎬 YouTube video loaded' : '🔗 Direct video URL loaded';
-                document.getElementById('urlTypeLabel').textContent = typeLabel;
-                document.getElementById('urlConfirmedText').textContent = url;
-                document.getElementById('urlConfirmed').classList.add('show');
-
-                document.getElementById('generateBtn').disabled = false;
-                document.getElementById('urlTypeBadge').classList.remove('show');
+                _confirmUrl(url, data.filepath || url);
             } else {
-                showStatus('processingStatus', `Could not load URL: ${data.error}`, 'error');
+                showMsg('processingStatus', `Could not load URL: ${data.error}`, 'error');
                 btnLoad.disabled = false;
             }
-        } catch (err) {
-            // If there's no /load_url endpoint yet, fall back to just accepting the URL directly
-            loadedUrl        = url;
-            uploadedFilePath = url;
-
-            const typeLabel = isYouTubeUrl(url) ? '🎬 YouTube video loaded' : '🔗 Direct video URL loaded';
-            document.getElementById('urlTypeLabel').textContent = typeLabel;
-            document.getElementById('urlConfirmedText').textContent = url;
-            document.getElementById('urlConfirmed').classList.add('show');
-            document.getElementById('generateBtn').disabled = false;
-            document.getElementById('urlTypeBadge').classList.remove('show');
+        } catch {
+            // Backend not reachable — still confirm URL client-side
+            _confirmUrl(url, url);
         } finally {
             btnLoad.innerHTML = '<i class="bi bi-cloud-download"></i> Load Video from URL';
         }
     }
 
+    function _confirmUrl(url, filepath) {
+        loadedUrl        = url;
+        uploadedFilePath = filepath;
+
+        const label = isYouTube(url) ? '🎬 YouTube video loaded' : '🔗 Direct video URL loaded';
+        document.getElementById('urlTypeLabel').textContent   = label;
+        document.getElementById('urlConfirmedText').textContent = url;
+        document.getElementById('urlConfirmed').classList.add('show');
+        document.getElementById('urlBadge').classList.remove('show');
+        document.getElementById('btnOpenYt').classList.remove('show');
+        document.getElementById('startBtn').disabled = false;
+    }
+
     function clearUrl() {
-        loadedUrl        = null;
+        loadedUrl = null;
         uploadedFilePath = null;
         document.getElementById('videoUrlInput').value = '';
         document.getElementById('urlConfirmed').classList.remove('show');
-        document.getElementById('urlTypeBadge').classList.remove('show');
+        document.getElementById('urlBadge').classList.remove('show');
+        document.getElementById('btnOpenYt').classList.remove('show');
         document.getElementById('btnLoadUrl').disabled = true;
-        document.getElementById('generateBtn').disabled = true;
+        document.getElementById('startBtn').disabled = true;
     }
 
-    /* ════════════════════════════════════════
-       START DUBBING
-    ════════════════════════════════════════ */
+    /* ── FILE UPLOAD ── */
+    document.getElementById('fileInput').addEventListener('change', async function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        document.getElementById('uploadArea').classList.add('uploading');
+        showMsg('uploadStatus', 'Uploading video…', 'info');
+
+        const fd = new FormData();
+        fd.append('video', file);
+
+        try {
+            const res  = await fetch(`${API_BASE}/upload`, { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success) {
+                uploadedFilePath = data.filepath;
+                document.getElementById('fileName').textContent = `✔ ${data.filename} uploaded`;
+                document.getElementById('fileConfirmed').classList.add('show');
+                document.getElementById('startBtn').disabled = false;
+                showMsg('uploadStatus', 'Uploaded successfully!', 'success');
+            } else {
+                showMsg('uploadStatus', `Upload failed: ${data.error}`, 'error');
+            }
+        } catch (err) {
+            showMsg('uploadStatus', `Upload error: ${err.message}`, 'error');
+        } finally {
+            document.getElementById('uploadArea').classList.remove('uploading');
+        }
+    });
+
+    /* Drag & Drop */
+    const uploadArea = document.getElementById('uploadArea');
+    uploadArea.addEventListener('dragover',  e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+    uploadArea.addEventListener('dragleave', ()  => uploadArea.classList.remove('drag-over'));
+    uploadArea.addEventListener('drop', e => {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        if (e.dataTransfer.files.length) {
+            document.getElementById('fileInput').files = e.dataTransfer.files;
+            document.getElementById('fileInput').dispatchEvent(new Event('change'));
+        }
+    });
+
+    /* ── START DUBBING ── */
     async function startDubbing() {
         if (!uploadedFilePath) {
-            showStatus('processingStatus', 'Please upload a video or load a URL first', 'error');
+            showMsg('processingStatus', 'Please upload a video or load a URL first.', 'error');
             return;
         }
 
-        const generateBtn = document.getElementById('generateBtn');
-        generateBtn.disabled = true;
-        generateBtn.innerHTML = '<span class="spinner"></span> Processing…';
+        const btn = document.getElementById('startBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spin"></span> Processing…';
 
-        const lang = (document.querySelector('.language-option.selected') || {}).dataset?.lang || 'en';
-
+        const lang = (document.querySelector('.lang-option.selected') || {}).dataset?.lang || 'en';
         resetStages();
 
-        // For URL mode: show download stage first
-        if (currentMode === 'url') {
-            updateStageStatus('download', 'active');
-        } else {
-            updateStageStatus('upload', 'completed');
-        }
-        updateProgress(5);
+        if (currentMode === 'url') updateStage('download', 'active');
+        else updateStage('upload', 'completed');
+        setProgress(5);
 
         try {
             const payload = { language: lang, diarization: false };
+            if (currentMode === 'url') payload.url = uploadedFilePath;
+            else payload.filepath = uploadedFilePath;
 
-            if (currentMode === 'url') {
-                payload.url = uploadedFilePath;   // pass URL to backend
-            } else {
-                payload.filepath = uploadedFilePath;
-            }
-
-            const res  = await fetch(`${API_BASE_URL}/process`, {
+            const res  = await fetch(`${API_BASE}/process`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -904,91 +1147,77 @@
 
             if (data.success) {
                 currentJobId = data.job_id;
-                statusCheckInterval = setInterval(() => checkStatus(currentJobId), 2000);
+                pollTimer    = setInterval(() => checkStatus(currentJobId), 2000);
             } else {
-                showStatus('processingStatus', `Processing failed: ${data.error}`, 'error');
-                if (currentMode === 'url') updateStageStatus('download', 'error');
-                else updateStageStatus('extract', 'error');
-                resetButton();
+                showMsg('processingStatus', `Failed: ${data.error}`, 'error');
+                resetBtn();
             }
         } catch (err) {
-            showStatus('processingStatus', `Processing failed: ${err.message}`, 'error');
-            resetButton();
+            showMsg('processingStatus', `Error: ${err.message}`, 'error');
+            resetBtn();
         }
     }
 
-    /* ════════════════════════════════════════
-       STATUS POLLING
-    ════════════════════════════════════════ */
+    /* ── STATUS POLL ── */
     async function checkStatus(jobId) {
         try {
-            const res  = await fetch(`${API_BASE_URL}/status/${jobId}`);
+            const res  = await fetch(`${API_BASE}/status/${jobId}`);
             const data = await res.json();
+            if (!data.success) return;
 
-            if (data.success) {
-                const job = data.job;
-                updateProgress(job.progress);
-                updateStageStatus(job.stage, job.stage_status);
+            const job = data.job;
+            setProgress(job.progress);
+            updateStage(job.stage, job.stage_status);
 
-                if (job.status === 'completed') {
-                    clearInterval(statusCheckInterval);
-                    updateStageStatus('merge', 'completed');
-                    downloadUrl = job.download_url;
-                    showDownloadSection(job);
-                    showStatus('processingStatus', 'Video dubbing completed!', 'success');
-                } else if (job.status === 'failed') {
-                    clearInterval(statusCheckInterval);
-                    if (job.stage) updateStageStatus(job.stage, 'error');
-                    showStatus('processingStatus', job.message, 'error');
-                    resetButton();
-                }
+            if (job.status === 'completed') {
+                clearInterval(pollTimer);
+                updateStage('merge', 'completed');
+                downloadUrl = job.download_url;
+                showDone(job);
+                showMsg('processingStatus', '🎉 Dubbing complete!', 'success');
+            } else if (job.status === 'failed') {
+                clearInterval(pollTimer);
+                if (job.stage) updateStage(job.stage, 'error');
+                showMsg('processingStatus', job.message || 'Processing failed.', 'error');
+                resetBtn();
             }
         } catch (err) {
-            console.error('Status check error:', err);
+            console.error(err);
         }
     }
 
-    /* ════════════════════════════════════════
-       UI HELPERS
-    ════════════════════════════════════════ */
-    function updateProgress(pct) {
-        document.getElementById('progressBar').style.width = pct + '%';
-        document.getElementById('overallPercent').textContent = pct + '%';
+    /* ── UI HELPERS ── */
+    function setProgress(pct) {
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressPct').textContent  = pct + '%';
     }
 
-    function updateStageStatus(stage, status) {
-        const el = document.querySelector(`.stage-item[data-stage="${stage.toLowerCase()}"]`);
+    function updateStage(name, status) {
+        const el = document.querySelector(`.stage[data-stage="${String(name).toLowerCase()}"]`);
         if (!el) return;
         el.classList.remove('active', 'completed', 'error');
-        const statusEl = el.querySelector('.stage-status');
-        if (status === 'active' || status === 'processing') {
-            el.classList.add('active');
-            statusEl.textContent = 'Processing…';
-        } else if (status === 'completed' || status === 'done') {
-            el.classList.add('completed');
-            statusEl.textContent = 'Completed';
-        } else if (status === 'error' || status === 'failed') {
-            el.classList.add('error');
-            statusEl.textContent = 'Failed';
-        }
+        const st = el.querySelector('.stage-status-text');
+        if (status === 'active' || status === 'processing') { el.classList.add('active'); st.textContent = 'Processing…'; }
+        else if (status === 'completed' || status === 'done') { el.classList.add('completed'); st.textContent = 'Done'; }
+        else if (status === 'error' || status === 'failed') { el.classList.add('error'); st.textContent = 'Failed'; }
     }
 
     function resetStages() {
-        document.querySelectorAll('.stage-item').forEach(item => {
-            item.classList.remove('active', 'completed', 'error');
-            item.querySelector('.stage-status').textContent = 'Pending';
+        document.querySelectorAll('.stage').forEach(s => {
+            s.classList.remove('active', 'completed', 'error');
+            s.querySelector('.stage-status-text').textContent = 'Pending';
         });
     }
 
-    function resetButton() {
-        const btn = document.getElementById('generateBtn');
+    function resetBtn() {
+        const btn = document.getElementById('startBtn');
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-play-circle-fill"></i> Start Dubbing';
-        updateProgress(0);
+        setProgress(0);
     }
 
-    function showDownloadSection(jobData) {
-        document.getElementById('generateBtn').style.display = 'none';
+    function showDone(jobData) {
+        document.getElementById('startBtn').style.display = 'none';
         document.getElementById('downloadSection').style.display = 'block';
         if (jobData.download_url) {
             document.getElementById('videoSource').src = `http://localhost:5000${jobData.download_url}`;
@@ -997,27 +1226,26 @@
     }
 
     function downloadVideo() {
-        if (downloadUrl) {
-            const a = document.createElement('a');
-            a.href = `http://localhost:5000${downloadUrl}`;
-            a.download = 'dubbed_video.mp4';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            showStatus('processingStatus', 'Download started!', 'success');
-        }
+        if (!downloadUrl) return;
+        const a = document.createElement('a');
+        a.href = `http://localhost:5000${downloadUrl}`;
+        a.download = 'dubbed_video.mp4';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showMsg('processingStatus', 'Download started!', 'success');
     }
 
     function createNewDub() {
         document.getElementById('downloadSection').style.display = 'none';
-        document.getElementById('generateBtn').style.display = 'flex';
+        document.getElementById('startBtn').style.display = 'flex';
         document.getElementById('fileInput').value = '';
-        document.getElementById('fileInfo').classList.remove('show');
+        document.getElementById('fileConfirmed').classList.remove('show');
         clearUrl();
         uploadedFilePath = null;
-        downloadUrl      = null;
+        downloadUrl = null;
         resetStages();
-        resetButton();
+        resetBtn();
         document.getElementById('processingStatus').classList.remove('show');
         switchTab('upload');
         window.scrollTo({ top: 0, behavior: 'smooth' });
